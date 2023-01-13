@@ -1,2 +1,6 @@
 node_modules
 package-lock.json
+uploads/profiles/*
+uploads/posts/*
+!uploads/profiles/.gitkeep
+!uploads/posts/.gitkeep
