@@ -1,5 +1,11 @@
+export interface ErrorObj {
+  status: number,
+  message: string,
+  isAppError: boolean
+}
+
 export default function appError(message: string, status: number, isAppError: boolean) {
-  const errorObj = {
+  const errorObj: ErrorObj = {
     status,
     message,
     isAppError
