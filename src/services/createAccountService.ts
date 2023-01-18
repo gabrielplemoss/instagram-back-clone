@@ -1,4 +1,3 @@
-import { IAccount } from '../models/Account'
 import { createAccount, findByUsernameOrEmail } from '../repositories/accountsRepository'
 import { hash } from 'bcryptjs'
 import usernameOrEmailAlreadyExists from '../exception/usernameOrEmailAlreadyExists'
@@ -9,7 +8,7 @@ interface RequestBody {
   password: string
 }
 
-export async function createAccountService({ username, email, password }: RequestBody): Promise<IAccount> {
+export async function createAccountService({ username, email, password }: RequestBody) {
   const accountsFound = await findByUsernameOrEmail(username, email)
 
   if (accountsFound.length > 0) {
