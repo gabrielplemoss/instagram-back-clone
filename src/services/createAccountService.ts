@@ -23,8 +23,7 @@ export async function createAccountService({ username, email, password }: Reques
   }
 
   const hashedPassword = await hash(password, 12)
-  const newAccount = createAccount({ username, email, password: hashedPassword })
-  const createdAccount = await newAccount.save({ validateBeforeSave: true })
+  const createdAccount = createAccount({ username, email, password: hashedPassword })
 
   return createdAccount
 }

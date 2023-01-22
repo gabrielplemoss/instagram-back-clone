@@ -6,8 +6,9 @@ interface AccountData {
   password: string
 }
 
-export function createAccount({ username, email, password }: AccountData) {
-  return new Account({ username, email, password })
+export async function createAccount({ username, email, password }: AccountData) {
+  const account = new Account({ username, email, password })
+  return await account.save({ validateBeforeSave: true })
 }
 
 export async function findByUsernameOrEmail(
