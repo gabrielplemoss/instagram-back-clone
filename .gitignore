@@ -5,4 +5,5 @@ package-lock.json
 uploads/profiles/*
 uploads/posts/*
 !uploads/profiles/.gitkeep
+!uploads/profiles/1675d7e4-cd73-4d78-a522-e4f71cba88e5.png
 !uploads/posts/.gitkeep
