@@ -11,7 +11,7 @@ export async function createAccount({ username, email, password }: AccountData) 
   return await account.save({ validateBeforeSave: true })
 }
 
-export async function findByUsernameOrEmail(
+export async function findUsingUsernameAndEmail(
   username: string, email: string
 ): Promise<IAccount[]> {
   const account = await Account.find({

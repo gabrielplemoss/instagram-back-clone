@@ -1,4 +1,4 @@
-import { createAccount, findByUsernameOrEmail } from '../repositories/accountsRepository'
+import { createAccount, findUsingUsernameAndEmail } from '../repositories/accountsRepository'
 import { hash } from 'bcryptjs'
 import usernameOrEmailAlreadyExists from '../exception/usernameOrEmailAlreadyExists'
 
@@ -9,7 +9,7 @@ interface RequestBody {
 }
 
 export async function createAccountService({ username, email, password }: RequestBody) {
-  const accountsFound = await findByUsernameOrEmail(username, email)
+  const accountsFound = await findUsingUsernameAndEmail(username, email)
 
   if (accountsFound.length > 0) {
     const equalFields: string[] = []
