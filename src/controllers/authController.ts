@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import { createAccountService } from '../services/createAccountService'
 import { sign } from 'jsonwebtoken'
 import { createUser } from '../repositories/userRepository'
+import authenticateUserService from '../services/authenticateUserService'
 
 export async function signupController(req: Request, res: Response) {
   const { username, email, password } = req.body
@@ -20,4 +21,10 @@ export async function signupController(req: Request, res: Response) {
   res.status(201).json({ user: userInfo, token }).end()
 }
 
-export function signinController(req: Request, res: Response) { }
+export async function signinController(req: Request, res: Response) {
+  const { username, password } = req.body
+
+  const { user, token } = await authenticateUserService(username, password)
+
+  res.status(200).json({ user, token }).end()
+}
