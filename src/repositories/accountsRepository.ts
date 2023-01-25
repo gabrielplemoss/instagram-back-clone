@@ -6,7 +6,7 @@ interface AccountData {
   password: string
 }
 
-export async function createAccount({ username, email, password }: AccountData) {
+export async function createAccount({ username, email, password }: AccountData): Promise<IAccount | any> {
   const account = new Account({ username, email, password })
   return await account.save({ validateBeforeSave: true })
 }
@@ -22,4 +22,15 @@ export async function findUsingUsernameAndEmail(
   })
 
   return account
+}
+
+export async function findUsingUsernameOrEmail(usernameOrEmail: string): Promise<IAccount | any> {
+  const foundUser = await Account.findOne({
+    $or: [
+      { email: usernameOrEmail },
+      { username: usernameOrEmail },
+    ]
+  })
+
+  return foundUser
 }
