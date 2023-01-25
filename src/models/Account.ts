@@ -1,9 +1,9 @@
 import mongoose from 'mongoose'
 
 interface IAccount {
-  username: String,
-  email: String,
-  password: String,
+  username: string,
+  email: string,
+  password: string,
   createdAt: Date,
   updatedAt: Date,
 }
