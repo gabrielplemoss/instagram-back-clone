@@ -2,7 +2,7 @@ import { compare } from 'bcryptjs'
 import { sign } from 'jsonwebtoken'
 import { findUsingUsernameOrEmail } from '../repositories/accountsRepository'
 import { findUserUsingAccountId } from '../repositories/userRepository'
-import appError from '../exception/appError'
+import { CustomError } from '../exception/CustomError'
 
 const secret = `${process.env.SECRET_KEY}`
 
@@ -10,13 +10,13 @@ export default async function authenticateUserService(usernameOrEmail: string, p
   const accountExists = await findUsingUsernameOrEmail(usernameOrEmail)
 
   if (!accountExists) {
-    return appError('conta não encontrada', 401, true)
+    throw new CustomError('conta não encontrada', 401)
   }
 
   const isPasswordValid = await compare(password, accountExists?.password)
 
   if (!isPasswordValid) {
-    return appError('senha invalida tente novamente', 401, true)
+    throw new CustomError('senha invalida tente novamente', 401)
   }
 
   const user = await findUserUsingAccountId(accountExists._id)

@@ -1,16 +1,16 @@
 import { Request, Response, NextFunction } from 'express'
-import { ErrorObj } from '../exception/appError'
+import { CustomError } from '../exception/CustomError'
 
 export default function handlingErrors(
-  err: any,
+  error: any,
   req: Request,
   res: Response,
   next: NextFunction
 ) {
-  if (err.message.includes('status')) {
-    const erroObj: ErrorObj = JSON.parse(err.message)
-    return res.status(erroObj.status)
-      .json({ error: JSON.parse(erroObj.message) })
+
+  if (error instanceof CustomError) {
+    return res.status(error.statusCode)
+      .json({ error: error.message })
       .end()
   }
 

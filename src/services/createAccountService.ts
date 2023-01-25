@@ -1,6 +1,6 @@
 import { createAccount, findUsingUsernameAndEmail } from '../repositories/accountsRepository'
 import { hash } from 'bcryptjs'
-import usernameOrEmailAlreadyExists from '../exception/usernameOrEmailAlreadyExists'
+import { UsernameOrEmailInUse } from '../exception/UsernameOrEmailInUse'
 
 interface RequestBody {
   username: string,
@@ -19,7 +19,7 @@ export async function createAccountService({ username, email, password }: Reques
       if (value.email === email) equalFields.push('email')
     }))
 
-    usernameOrEmailAlreadyExists(equalFields)
+    throw new UsernameOrEmailInUse(equalFields)
   }
 
   const hashedPassword = await hash(password, 12)
