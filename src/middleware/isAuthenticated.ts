@@ -22,7 +22,6 @@ export default function isAuthenticated(req: Request, res: Response, next: NextF
   try {
     const decoded = verify(token, secret as string)
     const { id } = decoded as TokenPayload
-    console.log(decoded)
 
     res.locals.authUser = { id }
     return next()
