@@ -4,9 +4,10 @@ import { sign } from 'jsonwebtoken'
 import { createUser } from '../repositories/userRepository'
 import authenticateUserService from '../services/authenticateUserService'
 
+const secret = process.env.SECRET_KEY
+
 export async function signupController(req: Request, res: Response) {
   const { username, email, password } = req.body
-  const secret = `${process.env.SECRET_KEY}`
 
   const createdAccount = await createAccountService({ username, email, password })
   const createdUser = await createUser(createdAccount._id, createdAccount.username)
@@ -16,7 +17,7 @@ export async function signupController(req: Request, res: Response) {
     username: createdUser.account.username
   }
 
-  const token = sign(userInfo, secret, { expiresIn: 60 * 30 })
+  const token = sign(userInfo, secret as string, { expiresIn: 60 * 30 })
 
   res.status(201).json({ user: userInfo, token }).end()
 }

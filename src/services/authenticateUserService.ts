@@ -4,7 +4,7 @@ import { findUsingUsernameOrEmail } from '../repositories/accountsRepository'
 import { findUserUsingAccountId } from '../repositories/userRepository'
 import { CustomError } from '../exception/CustomError'
 
-const secret = `${process.env.SECRET_KEY}`
+const secret = process.env.SECRET_KEY
 
 export default async function authenticateUserService(usernameOrEmail: string, password: string): Promise<any> {
   const accountExists = await findUsingUsernameOrEmail(usernameOrEmail)
@@ -26,7 +26,7 @@ export default async function authenticateUserService(usernameOrEmail: string, p
     username: user?.account.username
   }
 
-  const token = sign(payload, secret, { expiresIn: 60 * 30 })
+  const token = sign(payload, secret as string, { expiresIn: 60 * 30 })
 
   return {
     user: payload,
