@@ -1,4 +1,4 @@
-import { createAccount, findUsingUsernameAndEmail } from '../repositories/accountsRepository'
+import { saveAccount, findUsingUsernameAndEmail } from '../repositories/accountsRepository'
 import { hash } from 'bcryptjs'
 import { UsernameOrEmailInUse } from '../exception/UsernameOrEmailInUse'
 
@@ -23,7 +23,7 @@ export async function createAccountService({ username, email, password }: Reques
   }
 
   const hashedPassword = await hash(password, 12)
-  const createdAccount = createAccount({ username, email, password: hashedPassword })
+  const createdAccount = saveAccount({ username, email, password: hashedPassword })
 
   return createdAccount
 }

@@ -6,7 +6,7 @@ interface AccountData {
   password: string
 }
 
-export async function createAccount({ username, email, password }: AccountData): Promise<IAccount | any> {
+export async function saveAccount({ username, email, password }: AccountData): Promise<IAccount | any> {
   const account = new Account({ username, email, password })
   return await account.save({ validateBeforeSave: true })
 }
