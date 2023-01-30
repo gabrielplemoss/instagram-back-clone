@@ -5,12 +5,13 @@ interface IUser {
     id: mongoose.Types.ObjectId,
     username: String
   }
-  follower: [],
-  followers: [],
-  avatar: string,
-  isPrivate: false,
-  createdAt: Date,
-  updatedAt: Date,
+  posts: mongoose.Types.ObjectId[]
+  follower: mongoose.Types.ObjectId[]
+  followers: mongoose.Types.ObjectId[]
+  avatar: string
+  isPrivate: false
+  createdAt: Date
+  updatedAt: Date
 }
 
 const UserSchema = new mongoose.Schema<IUser>({
@@ -24,6 +25,10 @@ const UserSchema = new mongoose.Schema<IUser>({
       require: true
     }
   },
+  posts: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Post'
+  }],
   follower: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
