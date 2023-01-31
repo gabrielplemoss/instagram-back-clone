@@ -13,7 +13,7 @@ export async function signupController(req: Request, res: Response) {
   const createdUser = await createUser(createdAccount._id, createdAccount.username)
 
   const userInfo = {
-    _id: createdUser._id,
+    id: createdUser._id,
     username: createdUser.account.username
   }
 
