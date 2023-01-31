@@ -25,3 +25,7 @@ export async function findUserUsingAccountId(id: string): Promise<IUser | any> {
 export async function insertOnePost(userId: string, postId: ObjectId): Promise<UpdateWriteOpResult> {
   return await User.updateOne({ _id: userId }, { $addToSet: { posts: postId } })
 }
+
+export async function removeOnePost(userId: string, postId: string): Promise<UpdateWriteOpResult> {
+  return await User.updateOne({ _id: userId }, { $pull: { posts: postId } })
+}

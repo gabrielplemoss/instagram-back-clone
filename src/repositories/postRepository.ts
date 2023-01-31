@@ -9,7 +9,7 @@ interface NewPost {
   photos: string[]
 }
 
-type PostWithId = IPost & { _id: mongoose.Types.ObjectId }
+type PostWithId = IPost & { _id: ObjectId }
 
 export async function savePost({ userOwner, description, photos }: NewPost): Promise<PostWithId | any> {
   const post = new Post({
@@ -17,12 +17,21 @@ export async function savePost({ userOwner, description, photos }: NewPost): Pro
     description: description,
     photos: photos
   })
-  return await post.save({ validateBeforeSave: true }) 
+  return await post.save({ validateBeforeSave: true })
 }
 
-export async function findPostById(id: ObjectId): Promise<PostWithId | null> {
+export async function findPostById(id: string): Promise<PostWithId | null> {
   return await Post.findById(id).populate({
     path: 'userOwner',
-    transform: (doc, id) => doc.account.username,
-  } as PopulateOptions)
+    transform: (doc, id) => doc.account.username
+  })
+}
+
+export async function deletePost(userId: string, postId: string) {
+  return await Post.deleteOne({
+    $and: [
+      { _id: postId },
+      { userOwner: userId }
+    ]
+  })
 }
