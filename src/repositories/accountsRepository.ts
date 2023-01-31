@@ -11,6 +11,11 @@ export async function saveAccount({ username, email, password }: AccountData): P
   return await account.save({ validateBeforeSave: true })
 }
 
+export async function findById(id: string): Promise<IAccount | any> {
+  const account = await Account.findById(id)
+  return account;
+}
+
 export async function findUsingUsernameAndEmail(
   username: string, email: string
 ): Promise<IAccount[]> {

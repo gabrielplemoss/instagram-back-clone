@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import mongoose, { UpdateWriteOpResult } from 'mongoose'
 import User, { IUser } from '../models/User'
 
 type ObjectId = mongoose.Types.ObjectId
@@ -10,10 +10,18 @@ export async function createUser(accountId: ObjectId, username: String): Promise
   return await user.save({ validateBeforeSave: true })
 }
 
-export async function findUserUsingAccountId(id: ObjectId): Promise<IUser | any> {
+export async function findUserById(accountId: string): Promise<IUser | any> {
+  return await User.findById(accountId)
+}
+
+export async function findUserUsingAccountId(id: string): Promise<IUser | any> {
   const user = await User.findOne({
     'account.id': id
   })
 
   return user
+}
+
+export async function insertOnePost(userId: string, postId: ObjectId): Promise<UpdateWriteOpResult> {
+  return await User.updateOne({ _id: userId }, { $addToSet: { posts: postId } })
 }
