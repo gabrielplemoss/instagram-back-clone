@@ -1,3 +1,4 @@
+import { ClientSession } from 'mongoose'
 import Account, { IAccount } from '../models/Account'
 
 interface AccountData {
@@ -6,9 +7,11 @@ interface AccountData {
   password: string
 }
 
-export async function saveAccount({ username, email, password }: AccountData): Promise<IAccount | any> {
+export async function saveAccount({ username, email, password }: AccountData,
+  session: ClientSession
+): Promise<IAccount | any> {
   const account = new Account({ username, email, password })
-  return await account.save({ validateBeforeSave: true })
+  return await account.save({ validateBeforeSave: true, session })
 }
 
 export async function findById(id: string): Promise<IAccount | any> {

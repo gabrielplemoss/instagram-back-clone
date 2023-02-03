@@ -1,6 +1,8 @@
 import { saveAccount, findUsingUsernameAndEmail } from '../repositories/accountsRepository'
 import { hash } from 'bcryptjs'
 import { UsernameOrEmailInUse } from '../exception/UsernameOrEmailInUse'
+import { dbTransaction } from '../utils/dbTransaction'
+import { saveUser } from '../repositories/userRepository'
 
 interface RequestBody {
   username: string,
@@ -23,7 +25,25 @@ export async function createAccountService({ username, email, password }: Reques
   }
 
   const hashedPassword = await hash(password, 12)
-  const createdAccount = saveAccount({ username, email, password: hashedPassword })
 
-  return createdAccount
+  const newUser = await dbTransaction(async (session) => {
+    const createdAccount = await saveAccount({
+      username,
+      email,
+      password: hashedPassword
+    }, session)
+
+    const createdUser = await saveUser(
+      createdAccount._id,
+      createdAccount.username,
+      session
+    )
+
+    return {
+      id: createdUser._id,
+      username: createdUser.account.username
+    }
+  })
+
+  return newUser
 }

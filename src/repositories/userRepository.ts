@@ -1,13 +1,15 @@
-import mongoose, { UpdateWriteOpResult } from 'mongoose'
+import mongoose, { ClientSession, UpdateWriteOpResult } from 'mongoose'
 import User, { IUser } from '../models/User'
 
 type ObjectId = mongoose.Types.ObjectId
 
-export async function createUser(accountId: ObjectId, username: String): Promise<IUser | any> {
+export async function saveUser(accountId: ObjectId, username: String,
+  session: ClientSession
+): Promise<IUser | any> {
   const user = new User()
   user.account.id = accountId
   user.account.username = username
-  return await user.save({ validateBeforeSave: true })
+  return await user.save({ validateBeforeSave: true, session })
 }
 
 export async function findUserById(accountId: string): Promise<IUser | any> {
