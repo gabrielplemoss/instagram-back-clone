@@ -21,7 +21,6 @@ export class CustomValidationError extends CustomError {
     const erroInner = validationError.inner
 
     this.message = erroInner.map((erro) => {
-      console.log(erro.path)
       return {
         field: erro.path,
         message: erro.message
