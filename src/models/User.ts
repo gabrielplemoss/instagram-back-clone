@@ -18,11 +18,13 @@ const UserSchema = new mongoose.Schema<IUser>({
   account: {
     id: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true
+      required: true,
+      unique: true
     },
     username: {
       type: String,
-      require: true
+      required: true,
+      unique: true
     }
   },
   posts: [{
