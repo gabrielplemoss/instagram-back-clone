@@ -17,7 +17,7 @@ export async function signupController(req: Request, res: Response) {
   const createdAccount: TokenPayload | any = await createAccountService({ username, email, password })
 
   if (!createdAccount) {
-    throw new CustomError('Falha ao cadastrar usuario', 401)
+    throw new CustomError('Falha ao cadastrar usuario', 500)
   }
 
   const token = sign(createdAccount as TokenPayload,
