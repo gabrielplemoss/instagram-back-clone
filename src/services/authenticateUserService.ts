@@ -22,7 +22,7 @@ export default async function authenticateUserService(usernameOrEmail: string, p
   const user = await findUserUsingAccountId(accountExists._id)
 
   const payload = {
-    id: user._id,
+    id: user?._id,
     username: user?.account.username
   }
 

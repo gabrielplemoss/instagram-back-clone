@@ -32,7 +32,7 @@ export async function createAccountService({ username, email, password }: Reques
       email,
       password: hashedPassword
     }, session)
-
+    
     const createdUser = await saveUser(
       createdAccount._id,
       createdAccount.username,

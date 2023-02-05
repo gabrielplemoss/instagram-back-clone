@@ -2,32 +2,33 @@ import mongoose, { ClientSession, UpdateWriteOpResult } from 'mongoose'
 import User, { IUser } from '../models/User'
 
 type ObjectId = mongoose.Types.ObjectId
+type IUserWithId = IUser & { _id: ObjectId }
 
-export async function saveUser(accountId: ObjectId, username: String,
+export async function saveUser(id: ObjectId, username: String,
   session: ClientSession
-): Promise<IUser | any> {
-  const user = new User()
-  user.account.id = accountId
-  user.account.username = username
+): Promise<IUserWithId> {
+  const user = new User({
+    account: { id, username }
+  })
   return await user.save({ validateBeforeSave: true, session })
 }
 
-export async function findUserById(accountId: string): Promise<IUser | any> {
+export async function findUserById(accountId: ObjectId): Promise<IUserWithId | null> {
   return await User.findById(accountId)
 }
 
-export async function findUserUsingAccountId(id: string): Promise<IUser | any> {
+export async function findUserUsingAccountId(accountId: ObjectId): Promise<IUserWithId | null> {
   const user = await User.findOne({
-    'account.id': id
+    'account.id': accountId
   })
 
   return user
 }
 
-export async function insertOnePost(userId: string, postId: ObjectId): Promise<UpdateWriteOpResult> {
+export async function insertOnePost(userId: ObjectId, postId: ObjectId): Promise<UpdateWriteOpResult> {
   return await User.updateOne({ _id: userId }, { $addToSet: { posts: postId } })
 }
 
-export async function removeOnePost(userId: string, postId: string): Promise<UpdateWriteOpResult> {
+export async function removeOnePost(userId: ObjectId, postId: ObjectId): Promise<UpdateWriteOpResult> {
   return await User.updateOne({ _id: userId }, { $pull: { posts: postId } })
 }

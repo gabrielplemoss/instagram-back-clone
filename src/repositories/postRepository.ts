@@ -1,4 +1,4 @@
-import mongoose, { PopulateOptions } from 'mongoose'
+import mongoose from 'mongoose'
 import Post, { IPost } from '../models/Post'
 
 type ObjectId = mongoose.Types.ObjectId
@@ -11,7 +11,7 @@ interface NewPost {
 
 type PostWithId = IPost & { _id: ObjectId }
 
-export async function savePost({ userOwner, description, photos }: NewPost): Promise<PostWithId | any> {
+export async function savePost({ userOwner, description, photos }: NewPost): Promise<PostWithId> {
   const post = new Post({
     userOwner: userOwner,
     description: description,
@@ -20,14 +20,14 @@ export async function savePost({ userOwner, description, photos }: NewPost): Pro
   return await post.save({ validateBeforeSave: true })
 }
 
-export async function findPostById(id: string): Promise<PostWithId | null> {
+export async function findPostById(id: ObjectId): Promise<PostWithId | null> {
   return await Post.findById(id).populate({
     path: 'userOwner',
     transform: (doc, id) => doc.account.username
   })
 }
 
-export async function deletePost(userId: string, postId: string) {
+export async function deletePost(userId: ObjectId, postId: ObjectId) {
   return await Post.deleteOne({
     $and: [
       { _id: postId },

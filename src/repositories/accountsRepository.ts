@@ -1,5 +1,7 @@
-import { ClientSession } from 'mongoose'
+import mongoose, { ClientSession } from 'mongoose'
 import Account, { IAccount } from '../models/Account'
+
+type ObjectId = mongoose.Types.ObjectId
 
 interface AccountData {
   username: string,
@@ -7,21 +9,23 @@ interface AccountData {
   password: string
 }
 
+type IAccountWithId = IAccount & { _id: ObjectId }
+
 export async function saveAccount({ username, email, password }: AccountData,
   session: ClientSession
-): Promise<IAccount | any> {
+): Promise<IAccountWithId> {
   const account = new Account({ username, email, password })
   return await account.save({ validateBeforeSave: true, session })
 }
 
-export async function findById(id: string): Promise<IAccount | any> {
+export async function findById(id: ObjectId): Promise<IAccountWithId | null> {
   const account = await Account.findById(id)
-  return account;
+  return account
 }
 
 export async function findUsingUsernameAndEmail(
   username: string, email: string
-): Promise<IAccount[]> {
+): Promise<IAccountWithId[]> {
   const account = await Account.find({
     $or: [
       { email },
@@ -32,7 +36,7 @@ export async function findUsingUsernameAndEmail(
   return account
 }
 
-export async function findUsingUsernameOrEmail(usernameOrEmail: string): Promise<IAccount | any> {
+export async function findUsingUsernameOrEmail(usernameOrEmail: string): Promise<IAccountWithId | null> {
   const foundUser = await Account.findOne({
     $or: [
       { email: usernameOrEmail },
