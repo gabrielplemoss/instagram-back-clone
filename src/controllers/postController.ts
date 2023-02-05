@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { CustomError } from '../exception/CustomError'
 import { createPostService } from '../services/createPostService'
 import { deletePostService } from '../services/deletePostService'
 
@@ -8,6 +9,10 @@ export async function createPost(req: Request, res: Response) {
   const photos = req.files
 
   const postCreated = await createPostService(id, text, photos as Express.Multer.File[])
+
+  if (!postCreated) {
+    throw new CustomError('Falha ao criar post', 500)
+  }
 
   res.status(201).json({ postCreated }).end()
 }

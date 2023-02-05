@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import mongoose, { ClientSession } from 'mongoose'
 import Post, { IPost } from '../models/Post'
 
 type ObjectId = mongoose.Types.ObjectId
@@ -9,19 +9,22 @@ interface NewPost {
   photos: string[]
 }
 
-type PostWithId = IPost & { _id: ObjectId }
+export type PostWithId = IPost & { _id: ObjectId }
 
-export async function savePost({ userOwner, description, photos }: NewPost): Promise<PostWithId> {
+export async function savePost(
+  { userOwner, description, photos }: NewPost,
+  session: ClientSession
+): Promise<PostWithId> {
   const post = new Post({
     userOwner: userOwner,
     description: description,
     photos: photos
   })
-  return await post.save({ validateBeforeSave: true })
+  return await post.save({ validateBeforeSave: true, session })
 }
 
-export async function findPostById(id: ObjectId): Promise<PostWithId | null> {
-  return await Post.findById(id).populate({
+export async function findPostById(id: ObjectId, session?: ClientSession): Promise<PostWithId | null> {
+  return await Post.findById(id, null, { session }).populate({
     path: 'userOwner',
     transform: (doc, id) => doc.account.username
   })
