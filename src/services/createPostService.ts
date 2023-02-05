@@ -1,12 +1,13 @@
 import { insertOnePost, findUserById } from '../repositories/userRepository'
 import { CustomError } from '../exception/CustomError'
 import { findPostById, savePost } from '../repositories/postRepository'
-import mongoose from 'mongoose'
+import { stringIdToObjectId } from '../utils/stringIdToObjectId'
 
 type File = Express.Multer.File
 
 export async function createPostService(userId: string, text: string, photosBody: File[]): Promise<any> {
-  const userExists = await findUserById(new mongoose.Types.ObjectId(userId))
+  const userObjectId = stringIdToObjectId(userId)
+  const userExists = await findUserById(userObjectId)
 
   if (!userExists)
     throw new CustomError('Usuario Invalido', 401)
@@ -18,7 +19,7 @@ export async function createPostService(userId: string, text: string, photosBody
     description: text,
     photos: namesPhotos
   })
-  const insertedPost = await insertOnePost(new mongoose.Types.ObjectId(userId), newPost._id)
+  const insertedPost = await insertOnePost(userObjectId, newPost._id)
 
   if (insertedPost.modifiedCount === 0)
     throw new CustomError('Falha ao criar post', 400)
