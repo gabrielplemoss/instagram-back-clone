@@ -1,7 +1,13 @@
 import { Request, Response } from 'express'
 import { CustomError } from '../exception/CustomError'
+import { findPostById } from '../repositories/postRepository'
 import { createPostService } from '../services/createPostService'
 import { deletePostService } from '../services/deletePostService'
+import { stringIdToObjectId } from '../utils/stringIdToObjectId'
+
+interface ReqParams {
+  postId: string
+}
 
 export async function createPost(req: Request, res: Response) {
   const { id } = res.locals.authUser
@@ -28,4 +34,15 @@ export async function deletePost(req: Request, res: Response) {
   }
 
   return res.status(204).end()
+}
+
+export async function getOnePost(req: Request<ReqParams>, res: Response) {
+  try {
+    const { postId } = req.params
+    let post = await findPostById(stringIdToObjectId(postId))
+
+    res.status(200).json({ post }).end()
+  } catch (error) {
+    throw new CustomError('Pagina não encontrada', 404)
+  }
 }
