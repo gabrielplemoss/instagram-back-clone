@@ -3,6 +3,7 @@ import { hash } from 'bcryptjs'
 import { UsernameOrEmailInUse } from '../exception/UsernameOrEmailInUse'
 import { dbTransaction } from '../utils/dbTransaction'
 import { saveUser } from '../repositories/userRepository'
+import { Types } from 'mongoose'
 
 interface RequestBody {
   username: string,
@@ -10,7 +11,12 @@ interface RequestBody {
   password: string
 }
 
-export async function createAccountService({ username, email, password }: RequestBody) {
+interface NewUser {
+  id: Types.ObjectId;
+  username: String;
+}
+
+export async function createAccountService({ username, email, password }: RequestBody): Promise<NewUser | null> {
   const accountsFound = await findUsingUsernameAndEmail(username, email)
 
   if (accountsFound.length > 0) {
@@ -32,7 +38,7 @@ export async function createAccountService({ username, email, password }: Reques
       email,
       password: hashedPassword
     }, session)
-    
+
     const createdUser = await saveUser(
       createdAccount._id,
       createdAccount.username,
