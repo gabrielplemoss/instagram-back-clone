@@ -17,12 +17,12 @@ export async function findUserById(accountId: ObjectId): Promise<IUserWithId | n
   return await User.findById(accountId)
 }
 
-export async function findUserUsingAccountId(accountId: ObjectId): Promise<IUserWithId | null> {
-  const user = await User.findOne({
-    'account.id': accountId
-  })
+export async function findUserByName(username: string): Promise<IUserWithId | null> {
+  return await User.findOne({ 'account.username': username })
+}
 
-  return user
+export async function findUserUsingAccountId(accountId: ObjectId): Promise<IUserWithId | null> {
+  return await User.findOne({ 'account.id': accountId })
 }
 
 export async function insertOnePostInUser(
