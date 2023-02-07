@@ -1,23 +1,24 @@
-import { CustomError } from '../exception/CustomError'
 import * as postRepository from '../repositories/postRepository'
 import * as userRepository from '../repositories/userRepository'
+import { dbTransaction } from '../utils/dbTransaction'
 import { stringIdToObjectId } from '../utils/stringIdToObjectId'
+import { CustomError } from '../exception/CustomError'
 
-export async function deletePostService(userId: string, postId: string) {
+export async function deletePostService(userId: string, postId: string): Promise<boolean | null> {
   const userObjectId = stringIdToObjectId(userId)
   const postObjectId = stringIdToObjectId(postId)
-  const postExists = await postRepository.findPostById(postObjectId)
+  const postExist = await postRepository.findPostById(postObjectId)
 
-  if (!postExists)
+  if (!postExist) {
     throw new CustomError('Postagem não encontrada', 404)
+  }
 
-  const userPost = await userRepository.removeOnePost(userObjectId, postObjectId)
+  const deletedPost = await dbTransaction(async (session) => {
+    await userRepository.removeOnePostInUser(userObjectId, postObjectId, session)
+    await postRepository.deletePost(userObjectId, postObjectId, session)
 
-  if (userPost.modifiedCount === 0)
-    throw new Error()
+    return true
+  })
 
-  const postDeleted = await postRepository.deletePost(userObjectId, postObjectId)
-
-  if (postDeleted.deletedCount === 0)
-    throw new Error()
+  return deletedPost
 }

@@ -30,11 +30,11 @@ export async function findPostById(id: ObjectId, session?: ClientSession): Promi
   })
 }
 
-export async function deletePost(userId: ObjectId, postId: ObjectId) {
+export async function deletePost(userId: ObjectId, postId: ObjectId, session: ClientSession) {
   return await Post.deleteOne({
     $and: [
       { _id: postId },
       { userOwner: userId }
     ]
-  })
+  }, { session })
 }

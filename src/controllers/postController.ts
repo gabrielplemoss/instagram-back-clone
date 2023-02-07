@@ -21,7 +21,11 @@ export async function deletePost(req: Request, res: Response) {
   const { id } = res.locals.authUser
   const { postId } = req.params
 
-  await deletePostService(id, postId)
+  const deletedPost = await deletePostService(id, postId)
 
-  res.status(204).end()
+  if (!deletedPost) {
+    throw new CustomError('Falha ao deletar post', 500)
+  }
+
+  return res.status(204).end()
 }
