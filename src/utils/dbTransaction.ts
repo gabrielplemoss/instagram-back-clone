@@ -1,10 +1,10 @@
 import mongoose, { ClientSession } from 'mongoose'
 
-type TransactionCallback = (session: ClientSession) => Promise<any>
+type TransactionCallback<T> = (session: ClientSession) => Promise<T>
 
-export async function dbTransaction(transactionCallback: TransactionCallback) {
+export async function dbTransaction<T>(transactionCallback: TransactionCallback<T>): Promise<T | null> {
   const session = await mongoose.startSession()
-  let result
+  let result: any
 
   await session.withTransaction(async (session) => {
     try {
@@ -16,7 +16,7 @@ export async function dbTransaction(transactionCallback: TransactionCallback) {
     } finally {
       await session.endSession()
     }
-    
+
     return result
   })
 
