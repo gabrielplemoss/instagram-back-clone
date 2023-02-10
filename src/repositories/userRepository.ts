@@ -56,3 +56,35 @@ export async function removeOnePostInUser(
     $inc: { postsCount: -1 }
   }, { session })
 }
+
+export async function addFollowingUser(
+  authUserId: ObjectId,
+  userIdToFollow: ObjectId,
+  session: ClientSession
+): Promise<UpdateWriteOpResult> {
+  return User.updateOne({
+    $and: [
+      { _id: authUserId },
+      { following: { $nin: [userIdToFollow] } }
+    ]
+  }, {
+    $addToSet: { following: userIdToFollow },
+    $inc: { followingCount: 1 }
+  }, { session })
+}
+
+export async function addFollowerUser(
+  authUserId: ObjectId,
+  userToAddFollower: ObjectId,
+  session: ClientSession
+): Promise<UpdateWriteOpResult> {
+  return User.updateOne({
+    $and: [
+      { _id: userToAddFollower },
+      { followers: { $nin: [authUserId] } }
+    ]
+  }, {
+    $addToSet: { followers: authUserId },
+    $inc: { followersCount: 1 }
+  }, { session })
+}
