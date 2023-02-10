@@ -8,6 +8,9 @@ interface IUser {
   posts: mongoose.Types.ObjectId[]
   follower: mongoose.Types.ObjectId[]
   followers: mongoose.Types.ObjectId[]
+  postsCount: number
+  followerCount: number
+  followersCount: number
   avatar: string
   isPrivate: false
   createdAt: Date
@@ -39,6 +42,18 @@ const UserSchema = new mongoose.Schema<IUser>({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   }],
+  postsCount: {
+    type: Number,
+    default: 0
+  },
+  followerCount: {
+    type: Number,
+    default: 0
+  },
+  followersCount: {
+    type: Number,
+    default: 0
+  },
   avatar: {
     type: String,
     default: '1675d7e4-cd73-4d78-a522-e4f71cba88e5.png'
