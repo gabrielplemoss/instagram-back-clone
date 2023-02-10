@@ -6,10 +6,10 @@ interface IUser {
     username: String
   }
   posts: mongoose.Types.ObjectId[]
-  follower: mongoose.Types.ObjectId[]
+  following: mongoose.Types.ObjectId[]
   followers: mongoose.Types.ObjectId[]
   postsCount: number
-  followerCount: number
+  followingCount: number
   followersCount: number
   avatar: string
   isPrivate: false
@@ -34,7 +34,7 @@ const UserSchema = new mongoose.Schema<IUser>({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Post'
   }],
-  follower: [{
+  following: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   }],
@@ -46,7 +46,7 @@ const UserSchema = new mongoose.Schema<IUser>({
     type: Number,
     default: 0
   },
-  followerCount: {
+  followingCount: {
     type: Number,
     default: 0
   },
