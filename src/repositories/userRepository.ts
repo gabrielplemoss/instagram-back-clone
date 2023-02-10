@@ -88,3 +88,35 @@ export async function addFollowerUser(
     $inc: { followersCount: 1 }
   }, { session })
 }
+
+export async function removeFollowingUser(
+  authUserId: ObjectId,
+  userIdToUnfollow: ObjectId,
+  session: ClientSession
+): Promise<UpdateWriteOpResult> {
+  return User.updateOne({
+    $and: [
+      { _id: authUserId },
+      { following: { $in: [userIdToUnfollow] } }
+    ]
+  }, {
+    $pull: { following: userIdToUnfollow },
+    $inc: { followingCount: -1 }
+  }, { session })
+}
+
+export async function removeFollowerUser(
+  authUserId: ObjectId,
+  userToRemoveFollower: ObjectId,
+  session: ClientSession
+): Promise<UpdateWriteOpResult> {
+  return User.updateOne({
+    $and: [
+      { _id: userToRemoveFollower },
+      { followers: { $in: [authUserId] } }
+    ]
+  }, {
+    $pull: { followers: authUserId },
+    $inc: { followersCount: -1 }
+  }, { session })
+}

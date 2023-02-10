@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import { CustomError } from '../exception/CustomError'
 import { findUserByName } from '../repositories/userRepository'
 import { followUserService } from '../services/followUserService'
+import { unfollowUserService } from '../services/unfollowUserService'
 
 export async function getUser(req: Request, res: Response) {
   const { username } = req.params
@@ -26,6 +27,23 @@ export async function followUser(req: Request, res: Response) {
 
   if (!followResponse) {
     throw new CustomError('Falha ao seguir usuario', 400)
+  }
+
+  res.status(200).end()
+}
+
+export async function unfollowUser(req: Request, res: Response) {
+  const { userId } = req.params
+  const authUserId = res.locals.authUser.id
+
+  if (userId === authUserId) {
+    throw new CustomError('Falha ao deixa de seguir usuario', 400)
+  }
+
+  const unfollowResponse = await unfollowUserService(authUserId, userId)
+
+  if (!unfollowResponse) {
+    throw new CustomError('Falha ao deixa de seguir usuario', 500)
   }
 
   res.status(200).end()
