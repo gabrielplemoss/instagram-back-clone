@@ -30,7 +30,15 @@ export async function insertOnePostInUser(
   postId: ObjectId,
   session: ClientSession
 ): Promise<UpdateWriteOpResult> {
-  return await User.updateOne({ _id: userId }, { $addToSet: { posts: postId } }, { session })
+  return await User.updateOne({
+    $and: [
+      { _id: userId },
+      { posts: { $in: [postId] } }
+    ]
+  }, {
+    $addToSet: { posts: postId },
+    $inc: { postsCount: 1 }
+  }, { session })
 }
 
 export async function removeOnePostInUser(
@@ -43,5 +51,8 @@ export async function removeOnePostInUser(
       { _id: userId },
       { posts: { $in: [postId] } }
     ]
-  }, { $pull: { posts: postId } }, { session })
+  }, {
+    $pull: { posts: postId },
+    $inc: { postsCount: -1 }
+  }, { session })
 }
