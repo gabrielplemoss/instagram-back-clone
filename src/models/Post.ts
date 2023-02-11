@@ -6,6 +6,8 @@ interface IPost {
   photos: string[]
   likes: mongoose.Types.ObjectId[]
   comments: mongoose.Types.ObjectId[]
+  commentsCount: number
+  likesCount: number
   createdAt: Date
   updatedAt: Date
 }
@@ -31,7 +33,15 @@ const PostSchema = new mongoose.Schema<IPost>({
   comments: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Comment'
-  }]
+  }],
+  commentsCount: {
+    type: Number,
+    default: 0
+  },
+  likesCount: {
+    type: Number,
+    default: 0
+  }
 }, {
   timestamps: true
 })
