@@ -1,7 +1,7 @@
 import { addFollowerUser, addFollowingUser, findUserById, } from '../repositories/userRepository'
 import { stringIdToObjectId } from '../utils/stringIdToObjectId'
 import { dbTransaction } from '../utils/dbTransaction'
-import { CustomError } from '../exception/CustomError'
+import { notFound } from '../exception/httpStatusError'
 
 export async function followUserService(authUserId: string, iserIdToFollow: string) {
   const authObjectId = stringIdToObjectId(authUserId)
@@ -10,7 +10,7 @@ export async function followUserService(authUserId: string, iserIdToFollow: stri
   const userExists = await findUserById(userFollowingObjectid)
 
   if (!userExists) {
-    throw new CustomError('Usuario não encontrado', 404)
+    throw notFound('Usuario não encontrado')
   }
 
   const follow = await dbTransaction(async (session) => {

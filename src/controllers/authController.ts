@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import { createAccountService } from '../services/createAccountService'
 import { sign } from 'jsonwebtoken'
 import authenticateUserService from '../services/authenticateUserService'
-import { CustomError } from '../exception/CustomError'
+import { serverError } from '../exception/httpStatusError'
 
 const secret = process.env.SECRET_KEY
 
@@ -17,7 +17,7 @@ export async function signupController(req: Request, res: Response) {
   const createdAccount: TokenPayload | any = await createAccountService({ username, email, password })
 
   if (!createdAccount) {
-    throw new CustomError('Falha ao cadastrar usuario', 500)
+    throw serverError('Falha ao cadastrar usuario')
   }
 
   const token = sign(createdAccount as TokenPayload,

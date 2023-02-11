@@ -1,8 +1,8 @@
 import { findUserById, insertOnePostInUser } from '../repositories/userRepository'
-import { CustomError } from '../exception/CustomError'
 import { findPostById, savePost, PostWithId } from '../repositories/postRepository'
 import { stringIdToObjectId } from '../utils/stringIdToObjectId'
 import { dbTransaction } from '../utils/dbTransaction'
+import { unauthorized } from '../exception/httpStatusError'
 
 type File = Express.Multer.File
 
@@ -15,7 +15,7 @@ export async function createPostService(
   const userExists = await findUserById(userObjectId)
 
   if (!userExists)
-    throw new CustomError('Usuario Invalido', 401)
+    throw unauthorized('Usuario Invalido')
 
   const namesPhotos = photosBody.map(photo => photo.filename)
 

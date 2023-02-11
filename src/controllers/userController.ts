@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { CustomError } from '../exception/CustomError'
+import { badRequest, notFound, serverError } from '../exception/httpStatusError'
 import { findUserByName } from '../repositories/userRepository'
 import { followUserService } from '../services/followUserService'
 import { unfollowUserService } from '../services/unfollowUserService'
@@ -9,7 +9,7 @@ export async function getUser(req: Request, res: Response) {
   const user = await findUserByName(username)
 
   if (!user) {
-    throw new CustomError('Pagina não encontrada', 404)
+    throw notFound('Usuario não encontrada')
   }
 
   res.status(200).json({ user }).end()
@@ -20,13 +20,13 @@ export async function followUser(req: Request, res: Response) {
   const authUserId = res.locals.authUser.id
 
   if (userId === authUserId) {
-    throw new CustomError('Falha ao seguir usuario', 500)
+    throw badRequest('Falha ao seguir usuario')
   }
 
   const followResponse = await followUserService(authUserId, userId)
 
   if (!followResponse) {
-    throw new CustomError('Falha ao seguir usuario', 400)
+    throw serverError('Falha ao seguir usuario')
   }
 
   res.status(200).end()
@@ -37,13 +37,13 @@ export async function unfollowUser(req: Request, res: Response) {
   const authUserId = res.locals.authUser.id
 
   if (userId === authUserId) {
-    throw new CustomError('Falha ao deixa de seguir usuario', 400)
+    throw badRequest('Falha ao deixar de seguir usuario')
   }
 
   const unfollowResponse = await unfollowUserService(authUserId, userId)
 
   if (!unfollowResponse) {
-    throw new CustomError('Falha ao deixa de seguir usuario', 500)
+    throw serverError('Falha ao deixar de seguir usuario')
   }
 
   res.status(200).end()

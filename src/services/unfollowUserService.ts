@@ -1,7 +1,7 @@
 import { findUserById, removeFollowerUser, removeFollowingUser } from '../repositories/userRepository'
 import { stringIdToObjectId } from '../utils/stringIdToObjectId'
 import { dbTransaction } from '../utils/dbTransaction'
-import { CustomError } from '../exception/CustomError'
+import { notFound } from '../exception/httpStatusError'
 
 export async function unfollowUserService(authUserId: string, userIdToFollow: string) {
   const authObjectId = stringIdToObjectId(authUserId)
@@ -10,7 +10,7 @@ export async function unfollowUserService(authUserId: string, userIdToFollow: st
   const userExists = await findUserById(userFollowingObjectid)
 
   if (!userExists) {
-    throw new CustomError('Usuario não encontrado', 404)
+    throw notFound('Usuario não encontrado')
   }
 
   const unfollow = await dbTransaction(async (session) => {
