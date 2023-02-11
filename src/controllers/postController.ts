@@ -37,12 +37,12 @@ export async function deletePost(req: Request, res: Response) {
 }
 
 export async function getOnePost(req: Request<ReqParams>, res: Response) {
-  try {
-    const { postId } = req.params
-    let post = await findPostById(stringIdToObjectId(postId))
+  const { postId } = req.params
+  let post = await findPostById(stringIdToObjectId(postId))
 
-    res.status(200).json({ post }).end()
-  } catch (error) {
+  if (!post) {
     throw new CustomError('Pagina não encontrada', 404)
   }
+
+  res.status(200).json({ post }).end()
 }
