@@ -6,6 +6,8 @@ interface IComment {
   replies: mongoose.Types.ObjectId[]
   text: string
   likes: mongoose.Types.ObjectId[]
+  likesCount: number
+  repliesCount: number
   createdAt: Date
   updatedAt: Date
 }
@@ -31,7 +33,15 @@ const CommentSchema = new mongoose.Schema<IComment>({
   replies: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Comment'
-  }]
+  }],
+  likesCount: {
+    type: Number,
+    default: 0
+  },
+  repliesCount: {
+    type: Number,
+    default: 0
+  }
 }, {
   timestamps: true
 })
