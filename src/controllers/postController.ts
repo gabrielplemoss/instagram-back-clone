@@ -6,11 +6,11 @@ import { deletePostService } from '../services/deletePostService'
 import { stringIdToObjectId } from '../utils/stringIdToObjectId'
 
 export async function createPost(req: Request, res: Response) {
-  const { id } = res.locals.authUser
+  const authUserId = res.locals.authUser.id
   const { text } = req.body
   const photos = req.files
 
-  const postCreated = await createPostService(id, text, photos as Express.Multer.File[])
+  const postCreated = await createPostService(authUserId, text, photos as Express.Multer.File[])
 
   if (!postCreated) {
     throw serverError('Falha ao criar post')
@@ -20,10 +20,10 @@ export async function createPost(req: Request, res: Response) {
 }
 
 export async function deletePost(req: Request, res: Response) {
-  const { id } = res.locals.authUser
+  const authUserId = res.locals.authUser.id
   const { postId } = req.params
 
-  const deletedPost = await deletePostService(id, postId)
+  const deletedPost = await deletePostService(authUserId, postId)
 
   if (!deletedPost) {
     throw serverError('Falha ao deletar post')
