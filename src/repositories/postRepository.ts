@@ -1,4 +1,4 @@
-import mongoose, { ClientSession } from 'mongoose'
+import mongoose, { ClientSession, UpdateWriteOpResult } from 'mongoose'
 import Post, { IPost } from '../models/Post'
 
 type ObjectId = mongoose.Types.ObjectId
@@ -36,5 +36,18 @@ export async function deletePost(userId: ObjectId, postId: ObjectId, session: Cl
       { _id: postId },
       { userOwner: userId }
     ]
+  }, { session })
+}
+
+export async function insertComment(
+  postId: ObjectId,
+  commentId: ObjectId,
+  session: ClientSession
+): Promise<UpdateWriteOpResult> {
+  return await Post.updateOne({
+    _id: postId
+  }, {
+    $addToSet: { comments: commentId },
+    $inc: { commentsCount: 1 }
   }, { session })
 }

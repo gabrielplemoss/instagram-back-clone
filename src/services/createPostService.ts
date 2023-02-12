@@ -14,9 +14,10 @@ export async function createPostService(
   const userObjectId = stringIdToObjectId(userId)
   const userExists = await findUserById(userObjectId)
 
-  if (!userExists)
+  if (!userExists) {
     throw unauthorized('Usuario Invalido')
-
+  }
+  
   const namesPhotos = photosBody.map(photo => photo.filename)
 
   const createdPost = await dbTransaction(async (session) => {
