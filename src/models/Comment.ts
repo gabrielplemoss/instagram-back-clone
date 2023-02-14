@@ -3,6 +3,7 @@ import mongoose from 'mongoose'
 interface IComment {
   userOwner: mongoose.Types.ObjectId
   postId: mongoose.Types.ObjectId
+  commentId: mongoose.Types.ObjectId
   replies: mongoose.Types.ObjectId[]
   text: string
   likes: mongoose.Types.ObjectId[]
@@ -19,6 +20,10 @@ const CommentSchema = new mongoose.Schema<IComment>({
     required: true
   },
   postId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Post',
+  },
+  commentId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Post',
   },
