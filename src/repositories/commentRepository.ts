@@ -31,13 +31,27 @@ export async function saveReply(
 
 export async function insertReplyInComment(
   commentParentId: ObjectId,
-   replyId: ObjectId, 
-   session: ClientSession
-   ): Promise<UpdateWriteOpResult> {
+  replyId: ObjectId,
+  session: ClientSession
+): Promise<UpdateWriteOpResult> {
   return await Comment.updateOne({
     _id: commentParentId
   }, {
     $addToSet: { replies: replyId },
     $inc: { repliesCount: 1 }
   }, { session })
+}
+
+export async function editCommentRepo(
+  userOwner: ObjectId,
+  commnentId: ObjectId,
+  newText: string
+): Promise<ICommentWithId | null> {
+  return await Comment.findOneAndUpdate({
+    $and: [
+      { _id: commnentId },
+      { userOwner }
+    ]
+  }, { $set: { text: newText } },
+    { returnDocument: 'after', })
 }
