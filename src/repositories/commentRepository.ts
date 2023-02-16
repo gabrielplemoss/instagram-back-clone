@@ -67,3 +67,15 @@ export async function addLikeComment(authUserId: ObjectId, commentId: ObjectId) 
     $inc: { likesCount: 1 }
   })
 }
+
+export async function removeLikeComment(authUserId: ObjectId, commentId: ObjectId) {
+  return await Comment.updateOne({
+    $and: [
+      { _id: commentId },
+      { likes: { $in: [authUserId] } }
+    ]
+  }, {
+    $pull: { likes: authUserId },
+    $inc: { likesCount: -1 }
+  })
+}

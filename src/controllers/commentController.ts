@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { notFound, serverError } from '../exception/httpStatusError'
-import { addLikeComment, editCommentRepo, findOneCommentById } from '../repositories/commentRepository'
+import { addLikeComment, editCommentRepo, findOneCommentById, removeLikeComment } from '../repositories/commentRepository'
 import { createCommentService } from '../services/createCommentService'
 import { createReplyService } from '../services/createReplyService'
 import { stringIdToObjectId } from '../utils/stringIdToObjectId'
@@ -68,6 +68,18 @@ export async function likeComment(req: Request, res: Response) {
   const commentIdObjectId = stringIdToObjectId(commentId)
 
   await addLikeComment(authUserIdObjectId, commentIdObjectId)
+
+  return res.status(204).end()
+}
+
+export async function unlikeComment(req: Request, res: Response) {
+  const authUserId = res.locals.authUser.id
+  const { commentId } = req.params
+
+  const authUserIdObjectId = stringIdToObjectId(authUserId)
+  const commentIdObjectId = stringIdToObjectId(commentId)
+
+  await removeLikeComment(authUserIdObjectId, commentIdObjectId)
 
   return res.status(204).end()
 }
