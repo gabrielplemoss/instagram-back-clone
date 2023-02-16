@@ -55,3 +55,15 @@ export async function editCommentRepo(
   }, { $set: { text: newText } },
     { returnDocument: 'after', })
 }
+
+export async function addLikeComment(authUserId: ObjectId, commentId: ObjectId) {
+  return await Comment.updateOne({
+    $and: [
+      { _id: commentId },
+      { likes: { $nin: [authUserId] } }
+    ]
+  }, {
+    $addToSet: { likes: authUserId },
+    $inc: { likesCount: 1 }
+  })
+}

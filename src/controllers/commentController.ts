@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { notFound, serverError } from '../exception/httpStatusError'
-import { editCommentRepo, findOneCommentById } from '../repositories/commentRepository'
+import { addLikeComment, editCommentRepo, findOneCommentById } from '../repositories/commentRepository'
 import { createCommentService } from '../services/createCommentService'
 import { createReplyService } from '../services/createReplyService'
 import { stringIdToObjectId } from '../utils/stringIdToObjectId'
@@ -43,7 +43,7 @@ export async function editComment(req: Request, res: Response) {
 
   const commentExists = await findOneCommentById(commentIdObjectId)
 
-  if(!commentExists){
+  if (!commentExists) {
     throw notFound('Comentario não encontrado')
   }
 
@@ -53,9 +53,21 @@ export async function editComment(req: Request, res: Response) {
     comment
   )
 
-  if(!updatedComent){
+  if (!updatedComent) {
     throw serverError('Falha ao criar post')
   }
 
   return res.status(200).json({ updatedComent }).end()
+}
+
+export async function likeComment(req: Request, res: Response) {
+  const authUserId = res.locals.authUser.id
+  const { commentId } = req.params
+
+  const authUserIdObjectId = stringIdToObjectId(authUserId)
+  const commentIdObjectId = stringIdToObjectId(commentId)
+
+  await addLikeComment(authUserIdObjectId, commentIdObjectId)
+
+  return res.status(204).end()
 }
